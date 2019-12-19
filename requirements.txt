@@ -1,7 +1,10 @@
-pandas==0.25.3
-numpy==1.17.4
-dash==1.7.0
-dash_core_components==1.6.0
-pymongo==3.10.0
 plotly==4.4.1
+dash_core_components==1.6.0
+twilio==6.35.0
+w1thermsensor==1.1.2
+pandas==0.25.3
+pymongo==3.10.0
 dash_html_components==1.0.2
+dash==1.7.0
+numpy==1.17.4
+dash_daq==0.3.1
