@@ -14,7 +14,7 @@ This project allows the user to attach a DS18B20 sesnor to a raspberry pi and se
 7. Click **SSH** or **VNC** and repeat steps 4 and 5.  Optionally repeat the steps but click **VNC**
 
 
-## Setting static IP
+## Setting Static IP
 1. In the terminal type `sudo nano /etc/dhcpcd.conf`
 2. Scroll to the bottom of the file
 3. Type the following:
@@ -28,7 +28,7 @@ This project allows the user to attach a DS18B20 sesnor to a raspberry pi and se
 6. After reboot in the next step check IP address with ifconfig
 
 
-## Installing mongodb on to RaspberryPi
+## Installing MongoDB on to RaspberryPi
 Type the following commands in to the terminal on your RaspberryPi:
 1. `apt-get update`
 2. `apt-get upgrade`
@@ -37,17 +37,28 @@ Type the following commands in to the terminal on your RaspberryPi:
 5. `apt-get install mongodb`
 
 
-## Installing the application
+## Installing the Application
 Type the following commands in to the terminal on your RaspberryPi:
+1. `cd /home/pi/Documents/`
 1. `git clone https://github.com/mpocta30/smartThermometer.git`
 2. `cd smartThermometer`
-3. `pip install -r requirements.txt`
+3. `pip3 install -r requirements.txt`
 
 
 ## Set Environment Variables
 Type the following commands in to the terminal on your RaspberryPi:
 1. `export TWILIO_ACCOUNT_SID="Your Twilio SID"`
 2. `export TWILIO_AUTH_TOKEN="Your Twilio Token"`
+
+
+## Run Script at Startup
+1. In the terminal type: `sudo nano /etc/rc.local`
+2. Scroll to the bottom of the file
+3. Remove all code between the lines: `# By default this script does nothing` and `exit 0`
+4. Type `sudo python3 /home/pi/Documents/live_update.py &`
+4. Press ctrl+x
+5. Press the letter "Y"
+6. Reboot
 
 
 ## Enjoy!
