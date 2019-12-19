@@ -18,11 +18,12 @@ This project allows the user to attach a DS18B20 sesnor to a raspberry pi and se
 1. In the terminal type `sudo nano /etc/dhcpcd.conf`
 2. Scroll to the bottom of the file
 3. Type the following:
-`interface wlan0`
-
-`static ip_address=192.168.0.200/24`
-`static routers=192.168.0.1`
-`static domain_name_servers=192.168.0.1`
+```
+interface wlan0
+static ip_address=192.168.0.200/24
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1
+```
 4. Press ctrl+x
 5. Press the letter "Y"
 6. After reboot in the next step check IP address with ifconfig
@@ -30,11 +31,11 @@ This project allows the user to attach a DS18B20 sesnor to a raspberry pi and se
 
 ## Installing MongoDB on to RaspberryPi
 Type the following commands in to the terminal on your RaspberryPi:
-1. `apt-get update`
-2. `apt-get upgrade`
-3. `apt-get dist-upgrade`
-4. `reboot`
-5. `apt-get install mongodb`
+1. `sudo apt-get update`
+2. `sudo apt-get upgrade`
+3. `sudo apt-get dist-upgrade`
+4. reboot
+5. `sudo apt-get install mongodb`
 
 
 ## Installing the Application
@@ -58,7 +59,7 @@ Type the following commands in to the terminal on your RaspberryPi:
 4. Type `sudo python3 /home/pi/Documents/live_update.py &`
 4. Press ctrl+x
 5. Press the letter "Y"
-6. Reboot
+6. reboot
 
 
 ## Enjoy!
