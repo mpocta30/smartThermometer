@@ -6,6 +6,7 @@ class Twilio:
     def __init__(self):
         account_sid    = os.environ.get('TWILIO_ACCOUNT_SID')
         auth_token     = os.environ.get('TWILIO_AUTH_TOKEN')
+        print(account_sid)
         self.client    = Client(account_sid, auth_token)
         self.sender    = '+19157012107',
         self.recipient = '+18043639816'
@@ -15,7 +16,7 @@ class Twilio:
                 str(ftemp) + chr(176) + "F and " + str(ctemp) + chr(176) + "C!"
         
         try:       
-            message = client.messages \
+            message = self.client.messages \
                         .create(
                             body=body,
                             from_=self.sender,

@@ -1,10 +1,10 @@
-from w1thermsensor import w1thermsensor
+from w1thermsensor import W1ThermSensor
 import random
 
 
 class thermSensor:
     def __init__(self):
-        self.sensor = w1thermsensor()
+        self.sensor = W1ThermSensor()
 
     def getTemp(self):
         cTemp = round(self.sensor.get_temperature(), 2)

@@ -268,7 +268,8 @@ def showhide_current(tab):
 
 # Read in new temp and get new chart values
 @app.callback([Output('update-chart-data', 'children'),
-              Output('current-temp-id', 'children')],
+              Output('current-temp-id', 'children'),
+              Output('alert-toggle', 'on')],
               [Input('interval-component', 'n_intervals'),
               Input('timerange_dropdown', 'value')],
               [State('alert-toggle', 'on'),
@@ -291,9 +292,11 @@ def update_chart_data(n, value, toggle, threshold, unit):
 
     # If alerts are enabled check temp and send alert
     # if current temp is >= to the threshold
+    return_toggle = toggle
     if toggle and not threshold is None:
         if (unit == 'fahr' and newF >= threshold) or (unit == 'cels' and newC >= threshold):
             sms.sendAlert(newF, newC)
+            return_toggle = not toggle
 
     # Get brew historical temps
     mydatetime = datetime.now()
@@ -311,7 +314,7 @@ def update_chart_data(n, value, toggle, threshold, unit):
 
     tempData = json.dumps({'times': times, 'ftemps': ftemps, 'ctemps': ctemps})
 
-    return tempData, newTemps
+    return tempData, newTemps, return_toggle
 
 
 
@@ -411,4 +414,4 @@ if __name__ == '__main__':
     db   = tempDB('mylib', 'temperatures')
     sms  = Twilio()
     temp = thermSensor()
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', debug=False)

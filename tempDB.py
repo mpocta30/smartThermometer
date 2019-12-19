@@ -25,10 +25,10 @@ class tempDB:
 
     # Insert the new temperature values
     def insertTemps(self, time, cTemp, fTemp):
-        self.collection.insert_one({"time": time, "ftemp": fTemp, "ctemp": cTemp})
+        self.collection.insert({"time": time, "ftemp": fTemp, "ctemp": cTemp})
 
 
     # Delete all documents in collection
     def clearCollection(self):
-        self.collection.delete_many({})
+        self.collection.remove()
     
