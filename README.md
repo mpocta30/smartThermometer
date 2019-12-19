@@ -7,8 +7,8 @@ Type the following commands in to the terminal on your RaspberryPi:
 2. `apt-get upgrade`
 3. `apt-get dist-upgrade`
 4. `reboot`
+5. `apt-get install mongodb`
 
-apt-get install mongodb
 ## Installing the application
 Type the following commands in to the terminal on your RaspberryPi:
 1. `git clone https://github.com/mpocta30/smartThermometer.git`
