@@ -292,10 +292,8 @@ def update_chart_data(n, value, toggle, threshold, unit):
     # If alerts are enabled check temp and send alert
     # if current temp is >= to the threshold
     if toggle and not threshold is None:
-        if unit == 'fahr' and newF >= threshold:
-            print("Alert fahrenheit!")
-        elif unit == 'cels' and newC >= threshold:
-            print("Alert celsius!")
+        if (unit == 'fahr' and newF >= threshold) or (unit == 'cels' and newC >= threshold):
+            sms.sendAlert(newF, newC)
 
     # Get brew historical temps
     mydatetime = datetime.now()
