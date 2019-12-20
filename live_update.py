@@ -428,4 +428,4 @@ if __name__ == '__main__':
     db   = tempDB('mylib', 'temperatures')
     sms  = Twilio()
     temp = thermSensor()
-    app.run_server(host='0.0.0.0', debug=True)
+    app.run_server(host='0.0.0.0', debug=False)
