@@ -15,6 +15,8 @@ from ds18b20 import thermSensor
 
 # Global variables
 degree = chr(176)
+with open("temptocolor.json", "r") as file:
+    tempJSON = json.load(file)
 
 # Defining the external stylesheets
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css',
@@ -66,7 +68,9 @@ app.layout = html.Div([
             dcc.Tab(label='Celsius History', value='c-temp')
         ]),
         html.Div(id='alert-control', children=[
-            html.Div(id='current-temp-id', className='text-center bottom-space', children=[]),
+            html.Div(className="text-center", children=[
+                html.Div(id='current-temp-id', className='numberCircle', children=[])
+            ]),
             html.Div(className="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-center", children=[
                 dcc.Markdown('''
                     Use the switch below to turn alerts `On/Off`
@@ -151,6 +155,35 @@ def findRecs(dropvalue):
         return db.find_byDate((now - timedelta(hours=12)))
     elif dropvalue == 'day':
         return db.find_byDate((now - timedelta(days=1)))
+
+
+
+# Determine font color based on background
+def fontColor(backColor):
+    if (sum(backColor) / (3*255)) > 0.5:
+        return 0, 0, 0
+    else:
+        return 255, 255, 255
+
+
+
+# Get new RGB values from temp
+def getRGB(newF):
+    if newF >= 0 and newF <= 255:
+        rgb = tempJSON[str(round(newF))]
+    elif newF > 255:
+        rgb = [255, 0, 0]
+    elif newF < 0:
+        rgb = [0, 0, 255]
+    return rgb
+
+
+
+# Return style rgb string
+def rgbtoString(rgb):
+    rgb_str = 'rgb(' + str(rgb[0]) + ', ' + str(rgb[1]) + ', ' + \
+              str(rgb[2]) + ')'
+    return rgb_str
 
 
 
@@ -283,6 +316,7 @@ def showhide_current(tab):
 # Read in new temp and get new chart values
 @app.callback([Output('update-chart-data', 'children'),
               Output('current-temp-id', 'children'),
+              Output('current-temp-id', 'style'),
               Output('alert-toggle', 'on')],
               [Input('interval-component', 'n_intervals'),
               Input('timerange_dropdown', 'value')],
@@ -294,8 +328,21 @@ def update_chart_data(n, value, toggle, threshold, unit):
     newC, newF = temp.getTemp()
 
     # Display new temp values
-    newTemps = html.H3('The temperature is currently ' + str(newF) + degree \
-                + 'F and ' + str(newC) + degree + 'C')
+    if unit == 'fahr':
+        newTemps = html.P(str(newF) + degree + 'F')
+    elif unit == 'cels':
+        newTemps = html.P(str(newC) + degree + 'C')
+
+    # Get new RGB values from temp and determine font color
+    rgb = getRGB(newF)
+    color = fontColor(rgb)
+
+    # Convert rgb value to a CSS string
+    rgb_str = rgbtoString(rgb)
+    color_str = rgbtoString(color)
+
+    newBack  = {'background-color': rgb_str,
+                'color': color_str}
 
     # Current datetime
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -328,7 +375,7 @@ def update_chart_data(n, value, toggle, threshold, unit):
 
     tempData = json.dumps({'times': times, 'ftemps': ftemps, 'ctemps': ctemps})
 
-    return tempData, newTemps, return_toggle
+    return tempData, newTemps, newBack, return_toggle
 
 
 
