@@ -25,6 +25,9 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 # Structuring the layout of the page
 app.layout = html.Div([
+    html.Meta(name="viewport", 
+              content="width=device-width, initial-scale=1, maximum-scale=1",
+              ),
     dcc.ConfirmDialog(
         id='start-confirm',
         message='Are you sure you want to START recording the temperature?'
@@ -65,7 +68,7 @@ app.layout = html.Div([
         html.P(id="output"),
         html.Div(id='alert-control', children=[
             html.Div(id='current-temp-id', className='text-center bottom-space', children=[]),
-            html.Div(className="col-sm-6", children=[
+            html.Div(className="col-md-6 col-xs-12", children=[
                 dcc.Markdown('''
                     Use the switch below to turn alerts `On/Off`
                 '''),
@@ -74,18 +77,6 @@ app.layout = html.Div([
                     on=False,
                     color="#5cb85c"
                 ),
-                dcc.Markdown('''
-                    Use this button to clear the current temperature data from
-                    the database.''',
-                    style={'margin-top': '20px'}
-                ),
-                html.Button("Clear Database", 
-                    id="clearDB", 
-                    type="button", 
-                    className="btn btn-danger"
-                )  
-            ]),
-            html.Div(className="col-sm-6", children=[
                 dcc.Markdown('''
                     Choose whether you would like to trigger an alert in `Celsius`
                     or `Fahrenheit`.  Then enter the temperature you would like to
@@ -108,6 +99,18 @@ app.layout = html.Div([
                     value=0,
                     size=200
                 )
+            ]),
+            html.Div(className="col-md-6 col-xs-12", children=[
+                dcc.Markdown('''
+                    Use this button to clear the current temperature data from
+                    the database.''',
+                    style={'margin-top': '20px'}
+                ),
+                html.Button("Clear Database", 
+                    id="clearDB", 
+                    type="button", 
+                    className="btn btn-danger"
+                )  
             ]),
         ]),
         dcc.Dropdown(
@@ -248,18 +251,30 @@ def showhide_current(tab):
     drop    = {}
     if tab == 'current-temp':
         current = {'display': 'block'}
-        fahr    = {'display': 'none'}
-        cels    = {'display': 'none'}
+        fahr    = {'display': 'none',
+                   'height': '80vh',
+                   'width': '100%'}
+        cels    = {'display': 'none',
+                   'height': '80vh',
+                   'width': '100%'}
         drop    = {'display': 'none'}
     elif tab == 'f-temp':
         current = {'display': 'none'}
-        fahr    = {'display': 'block'}
-        cels    = {'display': 'none'}
+        fahr    = {'display': 'block',
+                   'height': '80vh',
+                   'width': '100%'}
+        cels    = {'display': 'none',
+                   'height': '80vh',
+                   'width': '100%'}
         drop    = {'display': 'block'}
     elif tab == 'c-temp':
         current = {'display': 'none'}
-        fahr    = {'display': 'none'}
-        cels    = {'display': 'block'}
+        fahr    = {'display': 'none',
+                   'height': '80vh',
+                   'width': '100%'}
+        cels    = {'display': 'block',
+                   'height': '80vh',
+                   'width': '100%'}
         drop    = {'display': 'block'}
 
     return current, fahr, cels, drop
@@ -414,4 +429,4 @@ if __name__ == '__main__':
     db   = tempDB('mylib', 'temperatures')
     sms  = Twilio()
     temp = thermSensor()
-    app.run_server(host='0.0.0.0', debug=False)
+    app.run_server(host='0.0.0.0', debug=True)
