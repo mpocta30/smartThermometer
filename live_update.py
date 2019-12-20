@@ -65,10 +65,9 @@ app.layout = html.Div([
             dcc.Tab(label='Fahrenheit History', value='f-temp'),
             dcc.Tab(label='Celsius History', value='c-temp')
         ]),
-        html.P(id="output"),
         html.Div(id='alert-control', children=[
             html.Div(id='current-temp-id', className='text-center bottom-space', children=[]),
-            html.Div(className="col-md-6 col-xs-12", children=[
+            html.Div(className="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-center", children=[
                 dcc.Markdown('''
                     Use the switch below to turn alerts `On/Off`
                 '''),
@@ -100,7 +99,7 @@ app.layout = html.Div([
                     size=200
                 )
             ]),
-            html.Div(className="col-md-6 col-xs-12", children=[
+            html.Div(className="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-center", children=[
                 dcc.Markdown('''
                     Use this button to clear the current temperature data from
                     the database.''',
