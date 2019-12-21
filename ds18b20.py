@@ -7,7 +7,7 @@ class thermSensor:
         self.sensor = W1ThermSensor()
 
     def getTemp(self):
-        cTemp = self.sensor.get_temperature()
+        cTemp = round(self.sensor.get_temperature(), 2)
         fTemp = round((cTemp*1.8) + 32, 2)
 
         return cTemp, fTemp
