@@ -1,8 +1,10 @@
+import os
 import dash
 import json
 import plotly
 import numpy
 import pandas
+import flask
 import dash_daq as daq
 import dash_core_components as dcc
 import dash_html_components as html
@@ -24,6 +26,9 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css',
 
 # Initiliazing the dash app
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
+
+app.title = 'BrewPi'
 
 # Structuring the layout of the page
 app.layout = html.Div([
@@ -469,6 +474,13 @@ def update_celsius_scatter(children):
             }
 
         return fig
+
+
+
+@server.route('/favicon.ico')
+def favicon():
+    return flask.send_from_directory(os.path.join(server.root_path, 'static'),
+                                     'favicon.ico')
 
 
 if __name__ == '__main__':
