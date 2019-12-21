@@ -17,7 +17,7 @@ from ds18b20 import thermSensor
 
 # Global variables
 degree = chr(176)
-with open("temptocolor.json", "r") as file:
+with open("/home/pi/Documents/smartThermometer/temptocolor.json", "r") as file:
     tempJSON = json.load(file)
 
 # Defining the external stylesheets
