@@ -17,7 +17,7 @@ from ds18b20 import thermSensor
 
 # Global variables
 degree = chr(176)
-with open("/home/pi/Documents/smartThermometer/temptocolor.json", "r") as file:
+with open("temptocolor.json", "r") as file:
     tempJSON = json.load(file)
 
 # Defining the external stylesheets
@@ -55,14 +55,14 @@ app.layout = html.Div([
                     type="button", 
                     className="btn btn-danger navbar-btn",
                     style={"margin-right": "20px",
-                           "display": "none"}
+                           "display": "block"}
                 ),
             html.Button("Start", 
                     id="start-toggle", 
                     type="button", 
                     className="btn btn-success navbar-btn",
                     style={"margin-right": "20px",
-                           "display": "block"}
+                           "display": "none"}
                 )  
         ])
     ]),
@@ -141,7 +141,8 @@ app.layout = html.Div([
             n_intervals=0,
             disabled=True
         ),
-        html.Div(id='update-chart-data', style={'display': 'none'})
+        html.Div(id='update-chart-data', style={'display': 'none'}),
+        html.Div(id='update-alert-data', style={'display': 'none'})
     ])
 ])
 
@@ -205,21 +206,27 @@ def toggle_interval(start_clicks, stop_clicks):
 
     if trigger['value']:
         if trigger['prop_id'] == 'stop-confirm.submit_n_clicks':
+            # Stop recording data
+            db.updateRead(False)
             start = {'display': 'block',
                     'margin-right': '20px'}
             stop  = {'display': 'none',
                     'margin-right': '20px'}
             return True, start, stop
         else:
+            # Start recording data
+            db.updateRead(True)
             start = {'display': 'none',
                     'margin-right': '20px'}
             stop  = {'display': 'block',
                     'margin-right': '20px'}
             return False, start, stop
     else:
-        start = {'display': 'block',
+        # Stop recording data
+        db.updateRead(True)
+        start = {'display': 'none',
                 'margin-right': '20px'}
-        stop  = {'display': 'none',
+        stop  = {'display': 'block',
                 'margin-right': '20px'}
         return True, start, stop
 
@@ -266,7 +273,7 @@ def clearDB(clear_clicks, children):
 
     if trigger['value']:
         if trigger['prop_id'] == 'cleardb-confirm.submit_n_clicks':
-            db.clearCollection()
+            db.clearCollection(db.temps)
             return True
         else:
             return False
@@ -318,6 +325,27 @@ def showhide_current(tab):
 
 
 
+# Check the alert values
+@app.callback(Output('update-alert-data', 'children'),
+            [Input('alert-toggle', 'on'),
+             Input('alert-threshold', 'value'),
+             Input('cf_dropdown', 'value')])
+def updateAlert(toggle, threshold, unit):
+    # Update the alert values
+    trigger = dash.callback_context.triggered[0]
+    if trigger['value']:
+        if trigger['value'] and trigger['prop_id'] == 'alert-toggle.on':
+            newValues = {'$set': {'alert_active': toggle}}
+            db.updateAlert(newValues)
+        elif trigger['value'] and trigger['prop_id'] == 'alert-threshold.value':
+            newValues = {'$set': {'threshold': threshold}}
+            db.updateAlert(newValues)
+        elif trigger['value'] and trigger['prop_id'] == 'cf_dropdown.value':
+            newValues = {'$set': {'unit': unit}}
+            db.updateAlert(newValues)
+
+
+
 # Read in new temp and get new chart values
 @app.callback([Output('update-chart-data', 'children'),
               Output('current-temp-id', 'children'),
@@ -329,8 +357,16 @@ def showhide_current(tab):
               State('alert-threshold', 'value'),
               State('cf_dropdown', 'value')])
 def update_chart_data(n, value, toggle, threshold, unit):
-    # Get current temps
-    newC, newF = temp.getTemp()
+
+    # Get brew historical temps
+    mydatetime = datetime.now()
+    twelveearlier = mydatetime - timedelta(hours=1)
+    recs = findRecs(value)
+
+    # Get newF and newC
+    newRec = recs[recs.count() - 1]
+    newF = newRec['ftemp']
+    newC = newRec['ctemp']
 
     # Display new temp values
     if unit == 'fahr':
@@ -353,21 +389,11 @@ def update_chart_data(n, value, toggle, threshold, unit):
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
 
-    # Insert the new temps
-    db.insertTemps(now, newC, newF)
 
     # If alerts are enabled check temp and send alert
     # if current temp is >= to the threshold
-    return_toggle = toggle
-    if toggle and not threshold is None:
-        if (unit == 'fahr' and newF >= threshold) or (unit == 'cels' and newC >= threshold):
-            sms.sendAlert(newF, newC)
-            return_toggle = not toggle
-
-    # Get brew historical temps
-    mydatetime = datetime.now()
-    twelveearlier = mydatetime - timedelta(hours=1)
-    recs = findRecs(value)
+    alert = db.getAlert()
+    return_toggle = alert['alert_active']
 
     # Separate all elements
     ftemps = []
@@ -484,7 +510,7 @@ def favicon():
 
 
 if __name__ == '__main__':
-    db   = tempDB('mylib', 'temperatures')
+    db   = tempDB('mylib', 'temperatures', 'read')
     sms  = Twilio()
     temp = thermSensor()
-    app.run_server(host='0.0.0.0', debug=False)
+    app.run_server(host='0.0.0.0', debug=True)
