@@ -228,7 +228,7 @@ def toggle_interval(start_clicks, stop_clicks):
                 'margin-right': '20px'}
         stop  = {'display': 'block',
                 'margin-right': '20px'}
-        return True, start, stop
+        return False, start, stop
 
 
 
