@@ -1,6 +1,6 @@
 import json
 
-from pymongo import MongoClient, ASCENDING
+from pymongo import MongoClient, ASCENDING, DESCENDING
 
 class tempDB:
     def __init__(self, database, temps, read):
@@ -14,15 +14,20 @@ class tempDB:
     # Find data in database within date range
     def find_byDate(self, date1, date2=None):
         if date2 == None:
-            return self.temps.find({"time":{"$gte":date1}}).sort("time",ASCENDING)
+            return self.temps.find({"time":{"$gte":date1}}).sort("time", ASCENDING)
         else:
             return self.temps.find({"time":{"$gte":date1,
-                                        "$lt": date2}}).sort("time",ASCENDING)
+                                        "$lt": date2}}).sort("time", ASCENDING)
 
 
     # Retrieve all data in the database
     def findAll(self):
-        return self.temps.find({}).sort("time",ASCENDING)
+        return self.temps.find({}).sort("time", ASCENDING)
+
+
+    # Retrieve the most recent temperature
+    def findRecent(self):
+        return self.temps.find({}).sort("time", DESCENDING).limit(1)
 
 
     # Insert the new temperature values
