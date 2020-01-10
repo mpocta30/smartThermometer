@@ -64,6 +64,21 @@ def fetchTempLists():
     return jsonify({'ftemps': ftemps, 'ctemps': ctemps})
 
 
+@app.route('/changeRead', methods=['POST'])
+def changeRead():
+    currentUnit = ['fahr', 'cels']
+
+    read = request.json
+    read['unit'] = currentUnit[read['selectUnit']]
+    del read['selectUnit']
+    newAlert = { '$set': read }
+    print(newAlert)
+
+    temp.updateAlert(newAlert)
+
+    return jsonify(read)
+
+
 if __name__ == '__main__':
     temp = tempDB('mylib', 'temperatures', 'read')
     app.run(host='0.0.0.0', debug=True)
