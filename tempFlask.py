@@ -47,6 +47,7 @@ def fetchTime():
 def fetchRecent():
     results = json.loads(dumps(temp.findRecent()))
     changeJSON(results)
+    print(results)
 
     return jsonify(results)
 
@@ -72,11 +73,25 @@ def changeRead():
     read['unit'] = currentUnit[read['selectUnit']]
     del read['selectUnit']
     newAlert = { '$set': read }
-    print(newAlert)
 
     temp.updateAlert(newAlert)
 
     return jsonify(read)
+
+
+@app.route('/fetchSettings', methods=['GET'])
+def fetchSettings():
+    currentUnit = ['fahr', 'cels']
+    alert = temp.getAlert()
+
+    alert['selectUnit'] = currentUnit.index(alert['unit'])
+    del alert['unit']
+    del alert['_id']
+    del alert['name']
+
+    print(alert)
+
+    return jsonify(alert)
 
 
 if __name__ == '__main__':

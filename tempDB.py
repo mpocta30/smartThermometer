@@ -56,7 +56,7 @@ class tempDB:
 
     # Get the current alert threshold data
     def getAlert(self):
-        read = self.read.find({'name': 'read'})
+        read = self.read.find({'name': 'read'}).limit(1)
         return read[0]
 
 
