@@ -23,9 +23,15 @@ while True:
             alert = db.getAlert()
             unit = alert['unit']
             threshold = alert['threshold']
+            operator = alert['operator']
 
-            if alert['alert_active']:
+            if alert['alert_active'] and alert['operator'] == 'greater':
                 if (unit == 'fahr' and newF >= threshold) or (unit == 'cels' and newC >= threshold):
+                    sms.sendAlert(newF, newC)
+                    newValues = {'$set': {'alert_active': False}}
+                    db.updateAlert(newValues)
+            elif alert['alert_active'] and alert['operator'] == 'less':
+                if (unit == 'fahr' and newF <= threshold) or (unit == 'cels' and newC <= threshold):
                     sms.sendAlert(newF, newC)
                     newValues = {'$set': {'alert_active': False}}
                     db.updateAlert(newValues)

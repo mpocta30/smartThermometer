@@ -68,10 +68,13 @@ def fetchTempLists():
 @app.route('/changeRead', methods=['POST'])
 def changeRead():
     currentUnit = ['fahr', 'cels']
+    currentOperator = ['greater', 'less']
 
     read = request.json
     read['unit'] = currentUnit[read['selectUnit']]
+    read['operator'] = currentOperator[read['tempOperator']]
     del read['selectUnit']
+    del read['tempOperator']
     newAlert = { '$set': read }
 
     temp.updateAlert(newAlert)
