@@ -4,11 +4,11 @@ from twilio.rest import Client
 
 class Twilio:
     def __init__(self):
-        account_sid    = "AC9bee1a68881895400bec3c57357a5bc0"
-        auth_token     = "3efe8e0c483fd3805e9ad887d4b0c7b2"
+        account_sid    = "TWILLIO_SID"
+        auth_token     = "TWILIO_TOKEN"
         self.client    = Client(account_sid, auth_token)
-        self.sender    = '+19157012107',
-        self.recipient = '+18043639816'
+        self.sender    = 'SENDER_PHONE_#',
+        self.recipient = 'RECEIPIENT_PHONE_#'
 
     def sendAlert(self, ftemp, ctemp):
         body = "Your home brew has reached the goal temperature of " + \
